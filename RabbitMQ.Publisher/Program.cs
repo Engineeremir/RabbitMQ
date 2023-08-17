@@ -15,13 +15,20 @@ var channel = connection.CreateModel();
 //create queue
 channel.QueueDeclare("hello-queue", true, false, false);
 
-//create message
-string message = "hello world";
 
-//convert message to byte
-var messageBody = Encoding.UTF8.GetBytes(message);
 
-channel.BasicPublish(string.Empty,"hello-queue",null,messageBody);
 
-Console.WriteLine("Message sent successfuly");
+
+Enumerable.Range(1, 250).ToList().ForEach(x =>
+{
+    //create message
+    string message = $"Message {x}";
+    //convert message to byte
+    var messageBody = Encoding.UTF8.GetBytes(message);
+
+    channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+
+    Console.WriteLine($"Message sent successfuly {message}");
+});
+
 Console.ReadLine();
