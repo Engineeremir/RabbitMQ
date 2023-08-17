@@ -12,21 +12,17 @@ using var connection = factory.CreateConnection();
 //create chanel
 var channel = connection.CreateModel();
 
-//create queue
-channel.QueueDeclare("hello-queue", true, false, false);
-
-
-
+channel.ExchangeDeclare("log-fanout", durable: true, type: ExchangeType.Fanout);
 
 
 Enumerable.Range(1, 250).ToList().ForEach(x =>
 {
     //create message
-    string message = $"Message {x}";
+    string message = $"log {x}";
     //convert message to byte
     var messageBody = Encoding.UTF8.GetBytes(message);
 
-    channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+    channel.BasicPublish("log-fanout","",null, messageBody);
 
     Console.WriteLine($"Message sent successfuly {message}");
 });
